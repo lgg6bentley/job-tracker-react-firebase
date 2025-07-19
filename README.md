@@ -26,7 +26,11 @@ Loading Indicators: Visual feedback (spinners) during asynchronous operations (e
 
 Secure API Key Handling: Firebase configuration is managed via environment variables (.env) to prevent public exposure of sensitive keys on GitHub.
 
-🚀 Technologies Used
+🚀 Live Demo
+Experience the Job Tracker application live here:
+https://job-tracker-app-umber.vercel.app/
+
+🛠️ Technologies Used
 Frontend:
 
 React (Vite for fast development)
@@ -41,7 +45,9 @@ Firebase Firestore (NoSQL cloud database)
 
 Version Control: Git & GitHub
 
-🛠️ Setup and Installation
+Deployment: Vercel
+
+⚙️ Setup and Installation (for Local Development)
 Follow these steps to get a local copy of the project up and running on your machine.
 
 Prerequisites
@@ -67,17 +73,7 @@ Enable Firestore Database and Authentication (Email/Password provider) for your 
 
 Register a new Web App in your Firebase project.
 
-Copy your Firebase configuration object. It will look something like this:
-
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
-  measurementId: "YOUR_MEASUREMENT_ID" // Optional
-};
+Copy your Firebase configuration object.
 
 4. Configure Environment Variables
 To securely manage your Firebase credentials, create a .env file in the root of your project (the same directory as package.json).
@@ -99,13 +95,8 @@ yarn dev
 
 The application will open in your browser, typically at http://localhost:5173/.
 
-🌐 Deployment
-This application can be easily deployed to various hosting services like Firebase Hosting, Netlify, Vercel, or GitHub Pages. The use of environment variables makes the deployment process secure and straightforward.
-
-(Instructions for specific deployment platforms can be added here if desired.)
-
 🤝 Contributing
 Feel free to fork this repository, open issues, or submit pull requests to improve the project.
 
 📄 License
-This project is open source and available under the MIT License. (You might want to add a https://www.google.com/search?q=LICENSE file if you haven't already)
+This project is open source and available under the MIT License.
