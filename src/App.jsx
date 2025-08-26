@@ -1,17 +1,13 @@
-// src/App.jsx
-
 import React, { useState, useEffect } from 'react';
 import AddJobForm from './AddJobForm.jsx';
 import JobList from './JobList.jsx';
 import LoginForm from './LoginForm.jsx';
-import EditJobForm from './EditJobForm.jsx'; // Make sure this import is present!
+import EditJobForm from './EditJobForm.jsx';
 
-// Firebase configuration and Firestore/Auth functions
 import { db, auth } from './firebase.jsx';
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore'; // Ensure updateDoc is imported!
+import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
-// MUI Imports
 import {
   Container,
   Box,
@@ -30,7 +26,7 @@ function App() {
   const [user, setUser] = useState(null);
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [editingJob, setEditingJob] = useState(null); // NEW: State to hold the job being edited
+  const [editingJob, setEditingJob] = useState(null);
 
   const theme = React.useMemo(
     () =>
@@ -121,12 +117,10 @@ function App() {
     }
   };
 
-  // NEW FUNCTION: handle click on edit button
   const handleEditClick = (job) => {
-    setEditingJob(job); // Set the entire job object to state for editing
+    setEditingJob(job);
   };
 
-  // NEW FUNCTION: handle update job submission
   const handleUpdateJob = async (updatedJobData) => {
     if (!user || !editingJob) {
       console.error("Cannot update job: No user logged in or no job being edited.");
@@ -135,12 +129,11 @@ function App() {
     setLoading(true);
     try {
       const jobDocRef = doc(db, 'users', user.uid, 'jobs', editingJob.id);
-      await updateDoc(jobDocRef, updatedJobData); // Update the document in Firestore
-      // Update local state to reflect the changes
+      await updateDoc(jobDocRef, updatedJobData);
       setJobs(prev => prev.map(job =>
         job.id === editingJob.id ? { ...job, ...updatedJobData } : job
       ));
-      setEditingJob(null); // Clear editing state after successful update
+      setEditingJob(null);
       console.log('Job updated with ID:', editingJob.id);
     } catch (error) {
       console.error("Error updating job:", error);
@@ -149,9 +142,8 @@ function App() {
     }
   };
 
-  // NEW FUNCTION: handle cancel edit
   const handleCancelEdit = () => {
-    setEditingJob(null); // Clear editing state
+    setEditingJob(null);
   };
 
   const handleLogout = async () => {
@@ -208,10 +200,16 @@ function App() {
             ) : (
               <>
                 {!user ? (
-                  <LoginForm onAuthAction={handleAuthAction} />
+                  <>
+                    <LoginForm onAuthAction={handleAuthAction} />
+                    <Box sx={{ textAlign: 'center', mt: 2 }}>
+                      <Typography variant="body2" color="text.secondary">
+                        🧪 You can create any fake username and password to test the app.
+                      </Typography>
+                    </Box>
+                  </>
                 ) : (
                   <>
-                    {/* Conditionally render AddJobForm or EditJobForm */}
                     {editingJob ? (
                       <EditJobForm
                         jobToEdit={editingJob}
@@ -221,7 +219,6 @@ function App() {
                     ) : (
                       <AddJobForm onAdd={handleAddJob} />
                     )}
-                    {/* Pass handleDeleteJob and onEdit to JobList */}
                     <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditClick} />
                   </>
                 )}
