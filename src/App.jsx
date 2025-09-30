@@ -182,7 +182,7 @@ function App() {
             <AppBar position="static" color="transparent" elevation={0}>
               <Toolbar>
                 <Typography variant="h4" component="h1" sx={{ flexGrow: 1, color: 'text.primary' }}>
-                  🧳 Job Tracker
+                   Job Tracker
                 </Typography>
                 <Button onClick={toggleColorMode} sx={{ mr: 1 }}>Toggle Theme</Button>
                 {user && (
