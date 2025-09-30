@@ -1,4 +1,4 @@
-🧳 Job Tracker Application
+Job Tracker Application
 A comprehensive web application designed to help users efficiently track their job applications. Built with React for a dynamic user interface, Material-UI for a modern and responsive design, and Firebase for robust backend services including authentication and real-time data storage.
 
 This project demonstrates a full CRUD (Create, Read, Update, Delete) implementation, theme management, and secure handling of API keys.
