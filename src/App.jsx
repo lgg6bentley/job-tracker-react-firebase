@@ -5,8 +5,24 @@ import LoginForm from './LoginForm.jsx';
 import EditJobForm from './EditJobForm.jsx';
 
 import { db, auth } from './firebase.jsx';
+<<<<<<< HEAD
 import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+=======
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+  updateDoc,
+} from 'firebase/firestore';
+import {
+  onAuthStateChanged,
+  signOut,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
+>>>>>>> 565bb20 (Normalize line endings)
 
 import {
   Container,
@@ -17,6 +33,7 @@ import {
   AppBar,
   Toolbar,
   CircularProgress,
+  Alert,
 } from '@mui/material';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -62,18 +79,32 @@ function App() {
   useEffect(() => {
     setLoading(true);
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setUser(currentUser);
       if (!currentUser) {
-        setJobs([]);
-        setLoading(false);
+        try {
+          const guestUser = await signInWithEmailAndPassword(
+            auth,
+            'guest@example.com',
+            'yourGuestPassword' // Replace with your actual password
+          );
+          setUser(guestUser.user);
+        } catch (error) {
+          console.error('Guest login failed:', error);
+          setUser(null);
+        } finally {
+          setLoading(false);
+        }
       } else {
+        setUser(currentUser);
         try {
           const jobRef = collection(db, 'users', currentUser.uid, 'jobs');
           const snapshot = await getDocs(jobRef);
-          const jobsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          const jobsData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
           setJobs(jobsData);
         } catch (error) {
-          console.error("Error fetching jobs:", error);
+          console.error('Error fetching jobs:', error);
         } finally {
           setLoading(false);
         }
@@ -83,35 +114,38 @@ function App() {
   }, []);
 
   const handleAddJob = async (data) => {
-    if (!user) {
-      console.error("Cannot add job: No user logged in.");
-      return;
-    }
+    if (!user) return;
+
+    const isGuest = user.email === 'guest@example.com';
+    const jobData = {
+      ...data,
+      isGuest,
+    };
+
     setLoading(true);
     try {
-      const docRef = await addDoc(collection(db, 'users', user.uid, 'jobs'), data);
-      setJobs(prev => [...prev, { id: docRef.id, ...data }]);
-      console.log('New job added with ID:', docRef.id);
+      const docRef = await addDoc(
+        collection(db, 'users', user.uid, 'jobs'),
+        jobData
+      );
+      setJobs((prev) => [...prev, { id: docRef.id, ...jobData }]);
     } catch (error) {
-      console.error("Error adding job:", error);
+      console.error('Error adding job:', error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteJob = async (jobId) => {
-    if (!user) {
-      console.error("Cannot delete job: No user logged in.");
-      return;
-    }
+    if (!user) return;
+
     setLoading(true);
     try {
       const jobDocRef = doc(db, 'users', user.uid, 'jobs', jobId);
       await deleteDoc(jobDocRef);
-      setJobs(prev => prev.filter(job => job.id !== jobId));
-      console.log('Job deleted with ID:', jobId);
+      setJobs((prev) => prev.filter((job) => job.id !== jobId));
     } catch (error) {
-      console.error("Error deleting job:", error);
+      console.error('Error deleting job:', error);
     } finally {
       setLoading(false);
     }
@@ -122,21 +156,28 @@ function App() {
   };
 
   const handleUpdateJob = async (updatedJobData) => {
-    if (!user || !editingJob) {
-      console.error("Cannot update job: No user logged in or no job being edited.");
-      return;
-    }
+    if (!user || !editingJob) return;
+
     setLoading(true);
     try {
       const jobDocRef = doc(db, 'users', user.uid, 'jobs', editingJob.id);
       await updateDoc(jobDocRef, updatedJobData);
+<<<<<<< HEAD
       setJobs(prev => prev.map(job =>
         job.id === editingJob.id ? { ...job, ...updatedJobData } : job
       ));
       setEditingJob(null);
       console.log('Job updated with ID:', editingJob.id);
+=======
+      setJobs((prev) =>
+        prev.map((job) =>
+          job.id === editingJob.id ? { ...job, ...updatedJobData } : job
+        )
+      );
+      setEditingJob(null);
+>>>>>>> 565bb20 (Normalize line endings)
     } catch (error) {
-      console.error("Error updating job:", error);
+      console.error('Error updating job:', error);
     } finally {
       setLoading(false);
     }
@@ -150,9 +191,8 @@ function App() {
     setLoading(true);
     try {
       await signOut(auth);
-      console.log("User logged out successfully.");
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error('Error logging out:', error);
     } finally {
       setLoading(false);
     }
@@ -163,7 +203,7 @@ function App() {
     try {
       await actionFn();
     } catch (error) {
-      console.error("Authentication action failed:", error);
+      console.error('Authentication action failed:', error);
       throw error;
     } finally {
       setLoading(false);
@@ -181,20 +221,49 @@ function App() {
           <Stack spacing={3}>
             <AppBar position="static" color="transparent" elevation={0}>
               <Toolbar>
+<<<<<<< HEAD
                 <Typography variant="h4" component="h1" sx={{ flexGrow: 1, color: 'text.primary' }}>
                    Job Tracker
+=======
+                <Typography
+                  variant="h4"
+                  component="h1"
+                  sx={{ flexGrow: 1, color: 'text.primary' }}
+                >
+                  Job Tracker
+>>>>>>> 565bb20 (Normalize line endings)
                 </Typography>
-                <Button onClick={toggleColorMode} sx={{ mr: 1 }}>Toggle Theme</Button>
+                <Button onClick={toggleColorMode} sx={{ mr: 1 }}>
+                  Toggle Theme
+                </Button>
                 {user && (
-                  <Button onClick={handleLogout} variant="contained" color="error">
+                  <Button
+                    onClick={handleLogout}
+                    variant="contained"
+                    color="error"
+                  >
                     Logout
                   </Button>
                 )}
               </Toolbar>
             </AppBar>
 
+            {user?.email === 'guest@example.com' && (
+              <Alert severity="info">
+                You’re in <strong>Guest Mode</strong>. Changes may not be saved
+                permanently.
+              </Alert>
+            )}
+
             {loading ? (
-              <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '200px' }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '200px',
+                }}
+              >
                 <CircularProgress />
               </Box>
             ) : (
@@ -219,7 +288,15 @@ function App() {
                     ) : (
                       <AddJobForm onAdd={handleAddJob} />
                     )}
+<<<<<<< HEAD
                     <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditClick} />
+=======
+                    <JobList
+                      jobs={jobs}
+                      onDelete={handleDeleteJob}
+                      onEdit={handleEditClick}
+                    />
+>>>>>>> 565bb20 (Normalize line endings)
                   </>
                 )}
               </>
