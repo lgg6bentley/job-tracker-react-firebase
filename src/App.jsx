@@ -5,10 +5,6 @@ import LoginForm from './LoginForm.jsx';
 import EditJobForm from './EditJobForm.jsx';
 
 import { db, auth } from './firebase.jsx';
-<<<<<<< HEAD
-import { collection, addDoc, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-=======
 import {
   collection,
   addDoc,
@@ -22,7 +18,6 @@ import {
   signOut,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
->>>>>>> 565bb20 (Normalize line endings)
 
 import {
   Container,
@@ -30,10 +25,7 @@ import {
   Typography,
   Stack,
   Button,
-  AppBar,
-  Toolbar,
   CircularProgress,
-  Alert,
 } from '@mui/material';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -73,7 +65,7 @@ function App() {
               }),
         },
       }),
-    [mode],
+    [mode]
   );
 
   useEffect(() => {
@@ -162,20 +154,12 @@ function App() {
     try {
       const jobDocRef = doc(db, 'users', user.uid, 'jobs', editingJob.id);
       await updateDoc(jobDocRef, updatedJobData);
-<<<<<<< HEAD
-      setJobs(prev => prev.map(job =>
-        job.id === editingJob.id ? { ...job, ...updatedJobData } : job
-      ));
-      setEditingJob(null);
-      console.log('Job updated with ID:', editingJob.id);
-=======
       setJobs((prev) =>
         prev.map((job) =>
           job.id === editingJob.id ? { ...job, ...updatedJobData } : job
         )
       );
       setEditingJob(null);
->>>>>>> 565bb20 (Normalize line endings)
     } catch (error) {
       console.error('Error updating job:', error);
     } finally {
@@ -219,40 +203,35 @@ function App() {
       <Box sx={{ bgcolor: 'background.default', minHeight: '100vh', py: 4 }}>
         <Container maxWidth="md">
           <Stack spacing={3}>
-            <AppBar position="static" color="transparent" elevation={0}>
-              <Toolbar>
-<<<<<<< HEAD
-                <Typography variant="h4" component="h1" sx={{ flexGrow: 1, color: 'text.primary' }}>
-                   Job Tracker
-=======
-                <Typography
-                  variant="h4"
-                  component="h1"
-                  sx={{ flexGrow: 1, color: 'text.primary' }}
-                >
-                  Job Tracker
->>>>>>> 565bb20 (Normalize line endings)
-                </Typography>
-                <Button onClick={toggleColorMode} sx={{ mr: 1 }}>
-                  Toggle Theme
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+              <Button onClick={toggleColorMode} variant="outlined" color="primary">
+                Toggle Theme
+              </Button>
+              {user && (
+                <Button onClick={handleLogout} variant="contained" color="error">
+                  Logout
                 </Button>
-                {user && (
-                  <Button
-                    onClick={handleLogout}
-                    variant="contained"
-                    color="error"
-                  >
-                    Logout
-                  </Button>
-                )}
-              </Toolbar>
-            </AppBar>
+              )}
+            </Box>
+
+            <Box className="hero">
+              <Typography variant="h3" sx={{ color: 'text.primary' }}>
+                Welcome to Job Tracker
+              </Typography>
+              <Typography variant="body1" sx={{ color: 'text.primary' }}>
+                Track your job applications. Stay organized and focused.
+              </Typography>
+            </Box>
 
             {user?.email === 'guest@example.com' && (
-              <Alert severity="info">
-                You’re in <strong>Guest Mode</strong>. Changes may not be saved
-                permanently.
-              </Alert>
+              <Box className="guest-banner">
+                <Typography variant="body1" sx={{ color: 'text.primary' }}>
+                  You’re logged in as <strong>guest@example.com</strong>. This demo account lets you explore all features without signing up.
+                </Typography>
+                <Typography variant="body2" sx={{ mt: 1, fontStyle: 'italic', color: 'text.secondary' }}>
+                  Note: Changes may not be saved permanently.
+                </Typography>
+              </Box>
             )}
 
             {loading ? (
@@ -273,7 +252,7 @@ function App() {
                     <LoginForm onAuthAction={handleAuthAction} />
                     <Box sx={{ textAlign: 'center', mt: 2 }}>
                       <Typography variant="body2" color="text.secondary">
-                        🧪 You can create any fake username and password to test the app.
+                        You can create any fake username and password to test the app.
                       </Typography>
                     </Box>
                   </>
@@ -288,19 +267,21 @@ function App() {
                     ) : (
                       <AddJobForm onAdd={handleAddJob} />
                     )}
-<<<<<<< HEAD
-                    <JobList jobs={jobs} onDelete={handleDeleteJob} onEdit={handleEditClick} />
-=======
                     <JobList
                       jobs={jobs}
                       onDelete={handleDeleteJob}
                       onEdit={handleEditClick}
                     />
->>>>>>> 565bb20 (Normalize line endings)
                   </>
                 )}
               </>
             )}
+
+            <Box className="footer">
+              <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                This is a demo version of Job Tracker. You’re currently using <strong>guest@example.com</strong>.
+              </Typography>
+            </Box>
           </Stack>
         </Container>
       </Box>
