@@ -1,4 +1,4 @@
-# 🧳 Job Tracker
+# Job Tracker
 
 A sleek and responsive job application tracker built with **React**, **Firebase**, and **Material UI**. Easily add, edit, and delete job entries—and explore the full experience instantly using the built-in demo account.
 
