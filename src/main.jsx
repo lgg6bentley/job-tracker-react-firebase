@@ -1,26 +1,17 @@
-// job-tracker-vite/src/main.jsx
+// src/main.jsx (AFTER FIX - Clean Tailwind Integration)
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.jsx'; // Ensure this matches your App.jsx filename
+import App from './App.jsx';
 
-// MUI Imports
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline'; // For consistent baseline styling
+// 1. Keep the import for your global CSS (which now contains Tailwind directives)
+import './index.css'; 
 
-// Create a basic Material UI theme. You can customize this later.
-const theme = createTheme({
-  palette: {
-    mode: 'light', // Default to light mode, can be changed to 'dark' or dynamically
-  },
-});
+// 2. We no longer need ThemeProvider, createTheme, or CssBaseline from MUI.
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      {/* CssBaseline kicks off a clean, consistent baseline for MUI components */}
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    {/* The App component is rendered directly, relying on Tailwind for styling */}
+    <App />
   </React.StrictMode>,
 );

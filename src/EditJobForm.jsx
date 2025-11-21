@@ -1,41 +1,24 @@
 // src/EditJobForm.jsx
 
-import { useState, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  TextField,
-  MenuItem,
-  Stack,
-  FormControl,
-  InputLabel,
-  Select,
-  Typography, // Added Typography for the heading
-  useTheme,
-} from '@mui/material';
+import { useState } from 'react';
+// STATUS_OPTIONS should be imported or defined here, matching AddJobForm
+const STATUS_OPTIONS = [
+  'Applied',
+  'Interviewing',
+  'Offer',
+  'Rejected',
+  'Wishlist',
+];
 
-// Receive jobToEdit, onUpdate, and onCancel as props
 const EditJobForm = ({ jobToEdit, onUpdate, onCancel }) => {
-  // Initialize form data with jobToEdit's data
-  const [formData, setFormData] = useState(jobToEdit || {
-    title: '',
-    company: '',
-    status: '',
-    deadline: '',
-    notes: '',
+  // Initialize state using the jobToEdit data
+  const [formData, setFormData] = useState({
+    title: jobToEdit.title || '',
+    company: jobToEdit.company || '',
+    status: jobToEdit.status || '',
+    deadline: jobToEdit.deadline || '',
+    notes: jobToEdit.notes || '',
   });
-  const theme = useTheme();
-
-  // Update form data if jobToEdit changes (e.g., if user clicks edit on another job)
-  useEffect(() => {
-    setFormData(jobToEdit || {
-      title: '',
-      company: '',
-      status: '',
-      deadline: '',
-      notes: '',
-    });
-  }, [jobToEdit]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -44,99 +27,115 @@ const EditJobForm = ({ jobToEdit, onUpdate, onCancel }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Call onUpdate with the ID and the updated data (excluding ID)
-    const { id, ...dataToUpdate } = formData; // Destructure to get data without the 'id'
-    onUpdate(dataToUpdate); // Pass only the data to update
+    if (!formData.title || !formData.company) {
+        alert('Job Title and Company are required!');
+        return;
+    }
+    // Call the onUpdate function with the merged data (including the original ID)
+    onUpdate({ ...formData });
   };
 
-  return (
-    <Box
-      component="form"
-      onSubmit={handleSubmit}
-      sx={{
-        width: '100%',
-        p: 4,
-        bgcolor: 'background.paper',
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: '8px',
-      }}
-    >
-      <Stack spacing={2}>
-        <Typography variant="h5" component="h2" sx={{ mb: 2, color: 'text.primary' }}>Edit Job</Typography>
+  const inputClass = "w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm";
 
-        <FormControl required fullWidth>
-          <TextField
-            label="Job Title"
-            variant="outlined"
+  return (
+    <form 
+      onSubmit={handleSubmit} 
+      className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl space-y-6 border-l-4 border-yellow-500 dark:border-yellow-400"
+    >
+      <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+        Edit Application: {jobToEdit.title}
+      </h3>
+      
+      <div className="space-y-4"> 
+        {/* Job Title Input */}
+        <div>
+          <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Title*</label>
+          <input
+            type="text"
+            id="edit-title"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            fullWidth
+            required
+            className={inputClass}
           />
-        </FormControl>
+        </div>
 
-        <FormControl required fullWidth>
-          <TextField
-            label="Company"
-            variant="outlined"
+        {/* Company Input */}
+        <div>
+          <label htmlFor="edit-company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company*</label>
+          <input
+            type="text"
+            id="edit-company"
             name="company"
             value={formData.company}
             onChange={handleChange}
-            fullWidth
+            required
+            className={inputClass}
           />
-        </FormControl>
+        </div>
 
-        <FormControl fullWidth>
-          <InputLabel id="job-status-label">Status</InputLabel>
-          <Select
-            labelId="job-status-label"
-            id="jobStatus"
+        {/* Status Select */}
+        <div>
+          <label htmlFor="edit-status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+          <select
+            id="edit-status"
             name="status"
             value={formData.status}
-            label="Status"
             onChange={handleChange}
+            className={inputClass}
           >
-            <MenuItem value="">Select status</MenuItem>
-            <MenuItem value="Applied">Applied</MenuItem>
-            <MenuItem value="Interviewing">Interviewing</MenuItem>
-            <MenuItem value="Offer">Offer</MenuItem>
-            <MenuItem value="Rejected">Rejected</MenuItem>
-            <MenuItem value="Wishlist">Wishlist</MenuItem>
-          </Select>
-        </FormControl>
+            <option value="">Select current status</option>
+            {STATUS_OPTIONS.map(status => (
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+        </div>
 
-        <FormControl fullWidth>
-          <TextField
-            label="Deadline"
-            variant="outlined"
+        {/* Deadline Date Input */}
+        <div>
+          <label htmlFor="edit-deadline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deadline</label>
+          <input
+            type="date"
+            id="edit-deadline"
             name="deadline"
             value={formData.deadline}
             onChange={handleChange}
-            type="date"
-            fullWidth
-            InputLabelProps={{ shrink: true }}
+            className={inputClass}
           />
-        </FormControl>
+        </div>
 
-        <FormControl fullWidth>
-          <TextField
-            label="Notes"
-            variant="outlined"
+        {/* Notes Textarea */}
+        <div>
+          <label htmlFor="edit-notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+          <textarea
+            id="edit-notes"
             name="notes"
             value={formData.notes}
             onChange={handleChange}
-            multiline
             rows={4}
-            fullWidth
-          />
-        </FormControl>
-
-        <Stack direction="row" spacing={2}>
-          <Button type="submit" variant="contained" color="primary" fullWidth>Update Job</Button>
-          <Button type="button" variant="outlined" color="secondary" onClick={onCancel} fullWidth>Cancel</Button>
-        </Stack>
-      </Stack>
-    </Box>
+            className={`${inputClass} resize-y`}
+          ></textarea>
+        </div>
+      </div>
+      
+      {/* Action Buttons: Save and Cancel */}
+      <div className="flex justify-between space-x-4">
+        <button 
+          type="button" // Important: must be 'button' to prevent form submission
+          onClick={onCancel}
+          className="w-full bg-gray-300 text-gray-800 font-bold py-3 rounded-lg hover:bg-gray-400 transition duration-200 shadow-md dark:bg-gray-600 dark:text-white dark:hover:bg-gray-700"
+        >
+          Cancel Edit
+        </button>
+        <button 
+          type="submit" 
+          className="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition duration-200 shadow-md transform hover:scale-[1.005]"
+        >
+          Save Changes
+        </button>
+      </div>
+    </form>
   );
 };
 

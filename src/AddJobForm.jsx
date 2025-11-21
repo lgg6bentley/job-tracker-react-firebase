@@ -1,20 +1,16 @@
 // src/AddJobForm.jsx
 
 import { useState } from 'react';
-import {
-  Box,        // MUI Box
-  Button,
-  TextField,  // Replaces Input (for job title, company, deadline)
-  MenuItem,   // Used inside Select for options
-  Stack,      // Replaces VStack
-} from '@mui/material';
 
-// Form control specific components from MUI
-import {
-  FormControl,
-  InputLabel, // Replaces FormLabel for TextField/Select
-  Select,     // MUI Select component
-} from '@mui/material';
+// Removed all MUI imports
+
+const STATUS_OPTIONS = [
+  'Applied',
+  'Interviewing',
+  'Offer',
+  'Rejected',
+  'Wishlist',
+];
 
 const AddJobForm = ({ onAdd }) => {
   const [formData, setFormData] = useState({
@@ -32,84 +28,114 @@ const AddJobForm = ({ onAdd }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!formData.title || !formData.company) {
+        alert('Job Title and Company are required!');
+        return;
+    }
     onAdd(formData); // Pass the form data to the parent component
     // Reset form fields after submission
     setFormData({ title: '', company: '', status: '', deadline: '', notes: '' });
   };
 
+  const inputClass = "w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-700 dark:text-gray-200 placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 shadow-sm";
+
   return (
-    <Box component="form" onSubmit={handleSubmit} sx={{ width: '100%', p: 4, border: '1px solid #ccc', borderRadius: '8px' }}>
-      <Stack spacing={2}> {/* Replaces VStack, spacing is a number */}
-        <FormControl required fullWidth> {/* 'required' prop for FormControl */}
-          <TextField
-            label="Job Title"
-            variant="outlined"
+    // Replaced MUI Box with a styled <div> and a standard <form> tag
+    <form 
+      onSubmit={handleSubmit} 
+      className="bg-white dark:bg-gray-800 p-6 md:p-8 rounded-xl shadow-2xl space-y-6"
+    >
+      <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+        Add New Application
+      </h3>
+      
+      {/* Replaced Stack with a simple div using Tailwind's 'space-y-4' utility */}
+      <div className="space-y-4"> 
+        {/* Job Title Input */}
+        <div>
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Job Title*</label>
+          <input
+            type="text"
+            id="title"
             name="title"
             value={formData.title}
             onChange={handleChange}
-            fullWidth
+            required
+            placeholder="e.g., Senior Frontend Developer"
+            className={inputClass}
           />
-        </FormControl>
+        </div>
 
-        <FormControl required fullWidth>
-          <TextField
-            label="Company"
-            variant="outlined"
+        {/* Company Input */}
+        <div>
+          <label htmlFor="company" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company*</label>
+          <input
+            type="text"
+            id="company"
             name="company"
             value={formData.company}
             onChange={handleChange}
-            fullWidth
+            required
+            placeholder="e.g., TechCorp Inc."
+            className={inputClass}
           />
-        </FormControl>
+        </div>
 
-        <FormControl fullWidth>
-          <InputLabel id="job-status-label">Status</InputLabel> {/* InputLabel for Select */}
-          <Select
-            labelId="job-status-label"
-            id="jobStatus"
+        {/* Status Select */}
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Status</label>
+          <select
+            id="status"
             name="status"
             value={formData.status}
-            label="Status" // TextField's label prop for Select
             onChange={handleChange}
+            // Tailwind class for select styling: similar to input, but handles the arrow
+            className={inputClass}
           >
-            <MenuItem value="">Select status</MenuItem>
-            <MenuItem value="Applied">Applied</MenuItem>
-            <MenuItem value="Interviewing">Interviewing</MenuItem>
-            <MenuItem value="Offer">Offer</MenuItem>
-            <MenuItem value="Rejected">Rejected</MenuItem>
-            <MenuItem value="Wishlist">Wishlist</MenuItem>
-          </Select>
-        </FormControl>
+            <option value="">Select current status</option>
+            {STATUS_OPTIONS.map(status => (
+              // Replaced MenuItem with standard <option>
+              <option key={status} value={status}>{status}</option>
+            ))}
+          </select>
+        </div>
 
-        <FormControl fullWidth>
-          <TextField
-            label="Deadline"
-            variant="outlined"
+        {/* Deadline Date Input */}
+        <div>
+          <label htmlFor="deadline" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deadline</label>
+          <input
+            type="date"
+            id="deadline"
             name="deadline"
             value={formData.deadline}
             onChange={handleChange}
-            type="date"
-            fullWidth
-            InputLabelProps={{ shrink: true }} // Ensures label shrinks for date input
+            className={inputClass}
           />
-        </FormControl>
+        </div>
 
-        <FormControl fullWidth>
-          <TextField
-            label="Notes"
-            variant="outlined"
+        {/* Notes Textarea */}
+        <div>
+          <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Notes</label>
+          <textarea
+            id="notes"
             name="notes"
             value={formData.notes}
             onChange={handleChange}
-            multiline // Makes it a textarea
-            rows={4}  // Sets initial rows for textarea
-            fullWidth
-          />
-        </FormControl>
-
-        <Button type="submit" variant="contained" color="primary" fullWidth>Add Job</Button>
-      </Stack>
-    </Box>
+            rows={4}
+            placeholder="Key contact info, interview details, etc."
+            className={`${inputClass} resize-y`}
+          ></textarea>
+        </div>
+      </div>
+      
+      {/* Replaced MUI Button with a Tailwind-styled <button> */}
+      <button 
+        type="submit" 
+        className="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition duration-200 shadow-md transform hover:scale-[1.005]"
+      >
+        Add Job
+      </button>
+    </form>
   );
 };
 

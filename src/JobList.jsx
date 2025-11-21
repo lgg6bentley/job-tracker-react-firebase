@@ -1,121 +1,53 @@
 // src/JobList.jsx
 
 import React from 'react';
-import {
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  Chip,
-  Stack, // Ensure Stack is imported for button grouping
-  Divider,
-  IconButton,
-  useTheme,
-} from '@mui/material';
+import JobCard from './JobCard.jsx'; // 👈 FIXED: Use default import syntax
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit'; // Make sure this import is present!
+// Helper function to define the Tailwind badge classes based on status
+// This logic should be placed here (or in a separate utility file) since it's needed by JobCard
+const getStatusClasses = (status) => {
+  switch (status) {
+    case 'Applied':
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300';
+    case 'Interviewing':
+      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300';
+    case 'Offer':
+      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300';
+    case 'Rejected':
+      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300';
+    case 'Wishlist':
+    default:
+      return 'bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-400';
+  }
+};
 
-// Receive onDelete AND onEdit props
-const JobList = ({ jobs, onDelete, onEdit }) => { // Ensure onEdit is received here!
-  const theme = useTheme();
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'Applied':
-        return 'primary';
-      case 'Interviewing':
-        return 'warning';
-      case 'Offer':
-        return 'success';
-      case 'Rejected':
-        return 'error';
-      case 'Wishlist':
-        return 'default';
-      default:
-        return 'default';
-    }
-  };
-
+const JobList = ({ jobs, onDelete, onEdit }) => {
   return (
-    <Box
-      sx={{
-        width: '100%',
-        mt: 4,
-        p: 4,
-        bgcolor: 'background.paper',
-        border: `1px solid ${theme.palette.divider}`,
-        borderRadius: '8px',
-      }}
-    >
-      <Typography variant="h5" component="h2" sx={{ mb: 2, color: 'text.primary' }}>Your Job Applications</Typography>
+    // Main container with full width
+    <div className="w-full">
       {jobs.length === 0 ? (
-        <Typography sx={{ color: 'text.secondary' }}>No jobs added yet. Add your first job above!</Typography>
+        // Tailwind styling for empty state feedback
+        <p className="text-lg text-gray-500 dark:text-gray-400 italic p-6 text-center bg-white dark:bg-gray-800 rounded-xl shadow-inner">
+          No job applications found. Start tracking your first one above!
+        </p>
       ) : (
-        <List>
-          {jobs.map((job, index) => (
-            <React.Fragment key={job.id}>
-              <ListItem
-                secondaryAction={
-                  // Use a Stack to group the edit and delete buttons
-                  <Stack direction="row" spacing={0.5}>
-                    {/* NEW: Edit Button */}
-                    <IconButton
-                      edge="end"
-                      aria-label="edit"
-                      onClick={() => onEdit(job)} // Call onEdit with the entire job object
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    {/* Existing Delete Button */}
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => onDelete(job.id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </Stack>
-                }
-              >
-                <ListItemText
-                  primary={
-                    <Typography variant="h6" sx={{ color: 'text.primary' }}>
-                      {job.title} at {job.company}
-                    </Typography>
-                  }
-                  secondaryTypographyProps={{ component: 'div' }}
-                  secondary={
-                    <Stack direction="row" spacing={1} alignItems="center">
-                      {job.deadline && (
-                        <Typography variant="body2" color="text.secondary">
-                          Deadline: {job.deadline}
-                        </Typography>
-                      )}
-                      {job.notes && (
-                        <Typography variant="body2" color="text.secondary">
-                          Notes: {job.notes}
-                        </Typography>
-                      )}
-                      {job.status && (
-                        <Chip
-                          label={job.status}
-                          color={getStatusColor(job.status)}
-                          size="small"
-                          sx={{ ml: job.deadline || job.notes ? 1 : 0 }}
-                        />
-                      )}
-                    </Stack>
-                  }
-                />
-              </ListItem>
-              {index < jobs.length - 1 && <Divider component="li" sx={{ borderColor: 'divider' }} />}
-            </React.Fragment>
+        // Responsive Grid Layout
+        // The grid creates a list of cards that wraps beautifully.
+        // 1 column on small screens, 2 on medium (md), 3 on large (lg).
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {jobs.map((job) => (
+            <JobCard
+              key={job.id}
+              job={job}
+              onDelete={onDelete}
+              onEdit={onEdit}
+              // Pass the status helper function down to the card
+              getStatusClasses={getStatusClasses}
+            />
           ))}
-        </List>
+        </div>
       )}
-    </Box>
+    </div>
   );
 };
 
